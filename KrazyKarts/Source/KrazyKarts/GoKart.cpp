@@ -11,23 +11,27 @@
 // Sets default values
 AGoKart::AGoKart()
 {
-	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
+ 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	bReplicates = true;
+
 }
 
 // Called when the game starts or when spawned
 void AGoKart::BeginPlay()
 {
 	Super::BeginPlay();
-
+	
+	if (HasAuthority())
+	{
+		NetUpdateFrequency = 1;
+	}
 }
 
 void AGoKart::GetLifetimeReplicatedProps(TArray< FLifetimeProperty > & OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-	DOREPLIFETIME(AGoKart, ReplicatedLocation);
-	DOREPLIFETIME(AGoKart, ReplicatedRotation);
+	DOREPLIFETIME(AGoKart, ReplicatedTranform); 
 }
 
 FString GetEnumText(ENetRole Role)
@@ -65,23 +69,22 @@ void AGoKart::Tick(float DeltaTime)
 
 	UpdateLocationFromVelocity(DeltaTime);
 
-	if (HasAuthority())
+	if (HasAuthority()) 
 	{
-		ReplicatedLocation = GetActorLocation();
-		ReplicatedRotation = GetActorRotation();
-	}
-	else
-	{
-		SetActorLocation(ReplicatedLocation);
-		SetActorRotation(ReplicatedRotation);
+		ReplicatedTranform = GetActorTransform();
 	}
 
 	DrawDebugString(GetWorld(), FVector(0, 0, 100), GetEnumText(Role), this, FColor::White, DeltaTime);
 }
 
+void AGoKart::OnRep_ReplicatedTranform()
+{
+	SetActorTransform(ReplicatedTranform);
+}
+
 FVector AGoKart::GetAirResistance()
 {
-	return -Velocity.GetSafeNormal() * Velocity.SizeSquared() * DragCoefficient;
+	return - Velocity.GetSafeNormal() * Velocity.SizeSquared() * DragCoefficient;
 }
 
 FVector AGoKart::GetRollingResistance()
@@ -95,7 +98,7 @@ FVector AGoKart::GetRollingResistance()
 void AGoKart::ApplyRotation(float DeltaTime)
 {
 	float DeltaLocation = FVector::DotProduct(GetActorForwardVector(), Velocity) * DeltaTime;
-	float RotationAngle = DeltaLocation / MinTurningRadius * SteeringThrow;
+	float RotationAngle =  DeltaLocation / MinTurningRadius * SteeringThrow;
 	FQuat RotationDelta(GetActorUpVector(), RotationAngle);
 
 	Velocity = RotationDelta.RotateVector(Velocity);
