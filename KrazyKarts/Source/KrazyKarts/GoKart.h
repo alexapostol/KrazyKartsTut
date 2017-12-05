@@ -29,7 +29,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 private:
-	FVector GetResistance();
+	FVector GetAirResistance();
+	FVector GetRollingResistance();
 
 	void ApplyRotation(float DeltaTime);
 
@@ -49,7 +50,11 @@ private:
 
 	// Highr means more DrAG
 	UPROPERTY(EditAnywhere)
-		float DragCoeficient = 16;
+		float DragCoefficient = 16;
+
+	// Highr means more rolling res
+	UPROPERTY(EditAnywhere)
+		float RollingResistanceCoefficient = 0.015;
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);
