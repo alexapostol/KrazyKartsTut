@@ -12,6 +12,11 @@
 #include "UObject/ConstructorHelpers.h"
 #include "Engine/Engine.h"
 
+// Needed for VR Headset
+#if HMD_MODULE_INCLUDED
+#include "IHeadMountedDisplay.h"
+#endif // HMD_MODULE_INCLUDED 
+
 #define LOCTEXT_NAMESPACE "VehicleHUD"
 
 AKrazyKartsHud::AKrazyKartsHud()
@@ -30,7 +35,10 @@ void AKrazyKartsHud::DrawHUD()
 
 	bool bWantHUD = true;
 #if HMD_MODULE_INCLUDED
-	bWantHUD = !GEngine->IsStereoscopic3D();
+	if (GEngine->HMDDevice.IsValid() == true)
+	{
+		bWantHUD = GEngine->HMDDevice->IsStereoEnabled();
+	}
 #endif // HMD_MODULE_INCLUDED
 	// We dont want the onscreen hud when using a HMD device	
 	if (bWantHUD == true)

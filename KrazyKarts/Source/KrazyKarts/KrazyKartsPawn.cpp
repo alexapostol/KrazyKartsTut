@@ -18,7 +18,7 @@
 
 // Needed for VR Headset
 #if HMD_MODULE_INCLUDED
-#include "IXRTrackingSystem.h"
+#include "IHeadMountedDisplay.h"
 #include "HeadMountedDisplayFunctionLibrary.h"
 #endif // HMD_MODULE_INCLUDED
 
@@ -35,7 +35,7 @@ AKrazyKartsPawn::AKrazyKartsPawn()
 
 	static ConstructorHelpers::FClassFinder<UObject> AnimBPClass(TEXT("/Game/Vehicle/Sedan/Sedan_AnimBP"));
 	GetMesh()->SetAnimInstanceClass(AnimBPClass.Class);
-	
+
 	// Simulation
 	UWheeledVehicleMovementComponent4W* Vehicle4W = CastChecked<UWheeledVehicleMovementComponent4W>(GetVehicleMovement());
 
@@ -201,7 +201,7 @@ void AKrazyKartsPawn::Tick(float Delta)
 
 	bool bHMDActive = false;
 #if HMD_MODULE_INCLUDED
-	if ((GEngine->XRSystem.IsValid() == true) && ((GEngine->XRSystem->IsHeadTrackingAllowed() == true) || (GEngine->IsStereoscopic3D() == true)))
+	if ((GEngine->HMDDevice.IsValid() == true) && ((GEngine->HMDDevice->IsHeadTrackingAllowed() == true) || (GEngine->IsStereoscopic3D() == true)))
 	{
 		bHMDActive = true;
 	}
@@ -232,9 +232,9 @@ void AKrazyKartsPawn::BeginPlay()
 void AKrazyKartsPawn::OnResetVR()
 {
 #if HMD_MODULE_INCLUDED
-	if (GEngine->XRSystem.IsValid())
+	if (GEngine->HMDDevice.IsValid())
 	{
-		GEngine->XRSystem->ResetOrientationAndPosition();
+		GEngine->HMDDevice->ResetOrientationAndPosition();
 		InternalCamera->SetRelativeLocation(InternalCameraOrigin);
 		GetController()->SetControlRotation(FRotator());
 	}
