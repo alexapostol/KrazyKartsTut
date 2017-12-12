@@ -94,3 +94,4 @@ void UGoKartMovementComponent::UpdateLocationFromVelocity(float DeltaTime)
 		Velocity = FVector::ZeroVector;
 	}
 }
+

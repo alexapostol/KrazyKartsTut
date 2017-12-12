@@ -12,14 +12,14 @@ struct FGoKartMove
 	GENERATED_USTRUCT_BODY()
 
 	UPROPERTY()
-		float Throttle;
+	float Throttle;
 	UPROPERTY()
-		float SteeringThrow;
+	float SteeringThrow;
 
 	UPROPERTY()
-		float DeltaTime;
+	float DeltaTime;
 	UPROPERTY()
-		float Time;
+	float Time;
 };
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -48,8 +48,9 @@ public:
 	void SetThrottle(float Val) { Throttle = Val; };
 	void SetSteeringThrow(float Val) { SteeringThrow = Val; };
 
+
 private:
-	
+
 	FVector GetAirResistance();
 	FVector GetRollingResistance();
 
@@ -59,26 +60,26 @@ private:
 
 	// The mass of the car (kg).
 	UPROPERTY(EditAnywhere)
-		float Mass = 1000;
+	float Mass = 1000;
 
 	// The force applied to the car when the throttle is fully down (N).
 	UPROPERTY(EditAnywhere)
-		float MaxDrivingForce = 10000;
+	float MaxDrivingForce = 10000;
 
 	// Minimum radius of the car turning circle at full lock (m).
 	UPROPERTY(EditAnywhere)
-		float MinTurningRadius = 10;
+	float MinTurningRadius = 10;
 
 	// Higher means more drag.
 	UPROPERTY(EditAnywhere)
-		float DragCoefficient = 16;
+	float DragCoefficient = 16;
 
 	// Higher means more rolling resistance.
 	UPROPERTY(EditAnywhere)
-		float RollingResistanceCoefficient = 0.015;
+	float RollingResistanceCoefficient = 0.015;
 
 	FVector Velocity;
 
 	float Throttle;
-	float SteeringThrow;	
+	float SteeringThrow;
 };
